@@ -17,7 +17,7 @@ This script monitors specified IP blocks for abuse reports using the AbuseIPDB A
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/abuseipdb-monitor.git
+   git clone https://github.com/juniorrrrr/abuseipdb-monitor.git
    cd abuseipdb-monitor
    ```
 
