@@ -2,12 +2,14 @@ import requests
 from ipaddress import ip_network
 import time
 import json
+from datetime import datetime
 
 # Configurations
 ABUSEIPDB_API_KEY = "your_abuseipdb_api_key"
 PUSHOVER_USER_KEY = "your_pushover_user_key"
 PUSHOVER_API_TOKEN = "your_pushover_app_token"
 NOTIFIED_IPS_FILE = "/root/notified_ips.json"  # Path to store notified IPs with scores
+LOG_FILE = "/root/last_check.log"  # Path to store the last check time
 
 # IP blocks to monitor
 BLOCKS = [
@@ -64,15 +66,22 @@ def save_notified_ips(data):
     with open(NOTIFIED_IPS_FILE, "w") as file:
         json.dump(data, file, indent=4)
 
+# Function to log the last check time for IPs and blocks
+def log_last_check(ip_or_block):
+    with open(LOG_FILE, "a") as file:  # Open the file in append mode
+        file.write(f"Checked {ip_or_block} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+
 # Execute the check
 if __name__ == "__main__":
     print("Starting IP monitoring...")
     notified_ips = load_notified_ips()
     for block in BLOCKS:
         print(f"Checking block: {block}")
+        log_last_check(block)  # Log block being checked
         ips = expand_cidr(block)
         for ip in ips:
             current_score = check_ip_abuse(ip)
+            log_last_check(ip)  # Log individual IP being checked
             if current_score > 0:
                 previous_score = notified_ips.get(ip, 0)
                 if current_score > previous_score:
