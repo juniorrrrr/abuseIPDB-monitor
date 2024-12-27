@@ -1,6 +1,7 @@
 import requests
 from ipaddress import ip_network
 import time
+import json
 
 # Configurations
 ABUSEIPDB_API_KEY = "your_abuseipdb_api_key"
@@ -53,8 +54,9 @@ def send_pushover_notification(ip, score):
 def load_notified_ips():
     try:
         with open(NOTIFIED_IPS_FILE, "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
+            data = file.read().strip()
+            return json.loads(data) if data else {}
+    except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
 # Function to save notified IPs with scores
