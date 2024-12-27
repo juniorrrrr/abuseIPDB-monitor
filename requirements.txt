@@ -1,0 +1,2 @@
+requests
+ipaddress  # Only required for Python < 3.9
